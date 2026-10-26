@@ -469,15 +469,16 @@ void DebugMenuOverlay::_update_detail_slot(int p_slot) {
 			double value = 0.0;
 			if (column == 0) {
 				value = row == 0 ? series_total.get_avg() : row == 1 ? series_cpu.get_avg()
-																								: series_gpu.get_avg();
+																	 : series_gpu.get_avg();
 			} else if (column == 1) {
 				value = row == 0 ? series_total.get_min() : row == 1 ? series_cpu.get_min()
-																								: series_gpu.get_min();
+																	 : series_gpu.get_min();
 			} else if (column == 2) {
 				value = row == 0 ? series_total.get_max() : row == 1 ? series_cpu.get_max()
-																								: series_gpu.get_max();
+																	 : series_gpu.get_max();
 			} else {
-				value = row == 0 ? last_total_ms : row == 1 ? last_cpu_ms : last_gpu_ms;
+				value = row == 0 ? last_total_ms : row == 1 ? last_cpu_ms
+															: last_gpu_ms;
 			}
 			_set_history_value(label, value);
 		}
