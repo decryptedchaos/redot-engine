@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="DebugMenuOverlay" inherits="CanvasLayer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Native overlay drawn by the [DebugMenu] singleton.
+	</brief_description>
+	<description>
+		The overlay is a self-contained [CanvasLayer] built entirely in C++: it creates its own [Control] hierarchy, fonts and draw calls, so it needs no scene, script or theme resource.
+		Builds as part of the engine rather than as an add-on: the default project font is used, the layout follows the debug menu add-on and the graphs are drawn with [method CanvasItem.draw_polyline].
+		Use [DebugMenu] to control it; it is exposed mainly so the overlay can be found and inspected at runtime.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
+</class>

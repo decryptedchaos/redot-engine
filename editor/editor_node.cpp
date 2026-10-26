@@ -883,6 +883,16 @@ void EditorNode::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {
+			// Stop routing prints into the editor log now. The node's children (including `log`)
+			// are destroyed during PREDELETE, which runs before ~EditorNode — so a print emitted
+			// from a destructor in that window reached a freed EditorLog and crashed at shutdown
+			// (observed with a WorldScape3D dialog destructor calling queue_free() once no
+			// SceneTree existed). Prints from here on still reach stdout through the OS handler.
+			if (print_handler.printfunc != nullptr) {
+				remove_print_handler(&print_handler);
+				print_handler.printfunc = nullptr;
+			}
+
 			singleton->active_plugins.clear();
 
 			if (progress_dialog) {
@@ -8899,7 +8909,12 @@ EditorNode::~EditorNode() {
 	ResourceImporterScene::clean_up_importer_plugins();
 	EditorContextMenuPluginManager::cleanup();
 
-	remove_print_handler(&print_handler);
+	// Already removed in NOTIFICATION_EXIT_TREE on a normal shutdown; guard so the destructive
+	// path (EditorNode deleted without leaving the tree) stays safe and idempotent.
+	if (print_handler.printfunc != nullptr) {
+		remove_print_handler(&print_handler);
+		print_handler.printfunc = nullptr;
+	}
 	EditorHelp::cleanup_doc();
 #if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
 	EditorHelpHighlighter::free_singleton();

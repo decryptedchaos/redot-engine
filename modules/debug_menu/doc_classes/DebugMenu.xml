@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="DebugMenu" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Native in-game performance and hardware debug menu.
+	</brief_description>
+	<description>
+		Engine singleton that owns the native debug menu overlay. In a normal project run the overlay is created automatically on the first frame and toggled with the [code]cycle_debug_menu[/code] input action (F3 by default). No autoload, scene or script is required.
+		The overlay shows FPS, frame time, CPU/GPU frame times, graphs, hardware information and the active rendering settings, matching the debug menu add-on.
+		The overlay is not created in the editor UI, the project manager, headless runs or release templates unless [code]debug_menu/enabled[/code] is set. Changing [member style] or [member visible] installs it on demand.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="cycle_style">
+			<return type="void" />
+			<description>
+				Advances to the next style: [constant HIDDEN], [constant VISIBLE_COMPACT], [constant VISIBLE_DETAILED] and back to [constant HIDDEN].
+			</description>
+		</method>
+		<method name="get_overlay" qualifiers="const">
+			<return type="DebugMenuOverlay" />
+			<description>
+				Returns the live overlay node, or [code]null[/code] when the overlay is not installed.
+			</description>
+		</method>
+		<method name="get_style" qualifiers="const">
+			<return type="int" enum="DebugMenu.Style" />
+			<description>
+				Returns the current [member style].
+			</description>
+		</method>
+		<method name="get_recording_path" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the CSV path used by [method set_recording_enabled].
+			</description>
+		</method>
+		<method name="get_stats">
+			<return type="Dictionary" />
+			<description>
+				Returns the current measurements and derived statistics. Keys: [code]fps[/code], [code]frametime_ms[/code], [code]frametime_avg_ms[/code], [code]frametime_min_ms[/code], [code]frametime_max_ms[/code], [code]cpu_ms[/code], [code]cpu_avg_ms[/code], [code]cpu_min_ms[/code], [code]cpu_max_ms[/code], [code]gpu_ms[/code], [code]gpu_avg_ms[/code], [code]gpu_min_ms[/code], [code]gpu_max_ms[/code], [code]frame[/code], [code]history_frames[/code], [code]p99_frametime_ms[/code], [code]p999_frametime_ms[/code], [code]low_1pct_fps[/code], [code]low_0_1pct_fps[/code] and [code]gpu_timing_available[/code].
+			</description>
+		</method>
+		<method name="install">
+			<return type="void" />
+			<description>
+				Installs the overlay now if it is enabled and the game is not running in the editor, project manager or headless mode. Safe to call repeatedly.
+			</description>
+		</method>
+		<method name="is_installed" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] while the overlay node exists.
+			</description>
+		</method>
+		<method name="is_visible" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether the overlay is currently shown.
+			</description>
+		</method>
+		<method name="is_recording_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] while frames are being written to the CSV log.
+			</description>
+		</method>
+		<method name="reset_history">
+			<return type="void" />
+			<description>
+				Clears the frame history and refills it with the current values so the graphs start flat.
+			</description>
+		</method>
+		<method name="set_recording_enabled">
+			<return type="void" />
+			<param index="0" name="enabled" type="bool" />
+			<description>
+				Starts or stops the CSV frame log at [code]debug_menu/recording/path[/code].
+			</description>
+		</method>
+		<method name="set_style">
+			<return type="void" />
+			<param index="0" name="style" type="int" enum="DebugMenu.Style" />
+			<description>
+				Sets the display style and emits [signal style_changed].
+			</description>
+		</method>
+		<method name="set_visible">
+			<return type="void" />
+			<param index="0" name="visible" type="bool" />
+			<description>
+				Shows or hides the overlay without changing its style. Showing it installs the overlay if needed.
+			</description>
+		</method>
+		<method name="uninstall">
+			<return type="void" />
+			<description>
+				Removes the overlay and its performance monitors.
+			</description>
+		</method>
+		<method name="update_settings_label">
+			<return type="void" />
+			<description>
+				Rebuilds the rendering-settings block. Call it after changing graphics settings at runtime; window resizes refresh it automatically.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="style" type="int" setter="set_style" getter="get_style" enum="DebugMenu.Style" default="0">
+			Display style of the overlay.
+		</member>
+		<member name="visible" type="bool" setter="set_visible" getter="is_visible" default="false">
+			Whether the overlay is currently shown.
+		</member>
+	</members>
+	<signals>
+		<signal name="style_changed">
+			<param index="0" name="style" type="int" enum="DebugMenu.Style" />
+			<description>
+				Emitted when the display style changes, including when the toggle action is used.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="HIDDEN" value="0" enum="Style">
+			The overlay is hidden.
+		</constant>
+		<constant name="VISIBLE_COMPACT" value="1" enum="Style">
+			Only FPS, frame time and the frame counter are shown.
+		</constant>
+		<constant name="VISIBLE_DETAILED" value="2" enum="Style">
+			Everything is shown, including the graphs and the information blocks.
+		</constant>
+		<constant name="MAX" value="3" enum="Style">
+			Number of styles.
+		</constant>
+	</constants>
+</class>

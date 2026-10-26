@@ -68,7 +68,9 @@ _ALWAYS_INLINE_ T cos(T p_x) {
 
 template <std::floating_point T, std::floating_point X>
 _ALWAYS_INLINE_ void sin_cos(X p_x, T &r_sin, T &r_cos) {
-#if __has_builtin(__builtin_sincos)
+// Clang lowers __builtin_sincos to a call to the C library's sincos(), which the
+// Microsoft CRT does not provide, so clang-cl/MSVC builds must use the portable path.
+#if __has_builtin(__builtin_sincos) && !defined(_MSC_VER)
 	double s, c;
 	__builtin_sincos(p_x, &s, &c);
 	r_sin = static_cast<T>(s);
